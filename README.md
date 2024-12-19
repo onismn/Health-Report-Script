@@ -23,7 +23,6 @@ Follow these steps to run the Agent:
    Create a `.env` file in the project root and add your API keys:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
-   SERPER_API_KEY=your_serper_api_key_here
    ```
 
 5. **Run the application**:
