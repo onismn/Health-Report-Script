@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medical Document Processor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input[type="url"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+        }
+        .script-content {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .metadata {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Medical Document Processor</h1>
+        <div class="form-group">
+            <label for="pdf_url">PDF URL:</label>
+            <input type="url" id="pdf_url" placeholder="https://example.com/document.pdf" required>
+        </div>
+        <button onclick="processPDF()">Process Document</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function processPDF() {
+            const pdfUrl = document.getElementById('pdf_url').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Processing...';
+            
+            try {
+                const response = await fetch('/process-medical-document', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ pdf_url: pdfUrl })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <h3>Generated Script:</h3>
+                        <div class="script-content">
+                            ${data.result}
+                        </div>
+                        <div class="metadata">
+                            <small>Processed at: ${data.metadata.processing_timestamp}</small>
+                        </div>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
